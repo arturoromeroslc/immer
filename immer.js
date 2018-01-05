@@ -31,6 +31,21 @@ let autoFreeze = true
  * @returns {any} a new state, or the base state if nothing was modified
  */
 function immer(baseState, thunk) {
+    // curried invocation
+    if (arguments.length === 1) {
+        // TODO: check arg is fn
+        return function() {
+            // TODO: check arg1 is object / array
+            const args = arguments
+            return immer(args[0], draft => {
+                args[0] = draft // blegh!
+                baseState.apply(null, args)
+            })
+        }
+    }
+
+    // TODO: check args
+
     /**
      * Maps baseState objects to revocable proxies
      * @type {Map<Object,RevocableProxy>}
